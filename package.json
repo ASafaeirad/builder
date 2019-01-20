@@ -1,0 +1,29 @@
+{
+  "name": "@frontendmonster/builder",
+  "version": "0.0.1",
+  "license": "MIT",
+  "author": "frontendmonster <frontendmonster@gmail.com>",
+  "description": "simple build script for my FOS libs",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/frontendmonster/builder.git"
+  },
+  "main": "index.js",
+  "files": [
+    "index.js",
+    "package.json",
+    "LICENSE",
+    "README.md"
+  ],
+  "scripts": {
+     "prelint": "eslint src --fix",
+    "lint": "eslint src"
+  },
+  "devDependencies": {
+    "@frontendmonster/eslint-config": "^1.0.1",
+    "eslint": "^5.6.0",
+    "eslint-plugin-import": "^2.14.0",
+    "eslint-plugin-jsx-a11y": "^6.1.1",
+    "eslint-plugin-react": "^7.11.1"
+  }
+}
