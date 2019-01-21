@@ -15,9 +15,11 @@
     "LICENSE",
     "README.md"
   ],
+  "bin": {
+    "builder": "bin.js"
+  },
   "scripts": {
-     "prelint": "eslint src --fix",
-    "lint": "eslint src"
+    "lint": "eslint *.js --fix"
   },
   "devDependencies": {
     "@frontendmonster/eslint-config": "^1.0.1",
@@ -25,5 +27,8 @@
     "eslint-plugin-import": "^2.14.0",
     "eslint-plugin-jsx-a11y": "^6.1.1",
     "eslint-plugin-react": "^7.11.1"
+  },
+  "dependencies": {
+    "yargs": "^12.0.5"
   }
 }

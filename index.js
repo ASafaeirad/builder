@@ -2,7 +2,7 @@ const fs = require('fs');
 const path = require('path');
 const { spawnSync, spawn } = require('child_process');
 
-function prepare({ files, out }) {
+function prepare({ files = [], out = 'lib', buildCmd = 'build' }) {
   const root = process.cwd();
 
   const pkgFile = path.join(root, 'package.json');
@@ -18,21 +18,32 @@ function prepare({ files, out }) {
     ...files,
   ];
 
-  spawnSync('npm', ['run', 'build'], { cwd: root, stdio: 'inherit' });
+  if (buildCmd && pkg.scripts[buildCmd]) {
+    const res = spawnSync('npm', ['run', buildCmd], { cwd: root, stdio: 'inherit' });
+    if (res.status !== 0) {
+      throw Error('Build Failed');
+    }
+  }
+
+  if (!fs.existsSync(outDir)) {
+    fs.mkdirSync(outDir);
+  }
 
   requiredFiles.map(file => fs.copyFileSync(path.join(root, file), path.join(outDir, file)));
 
   fs.writeFileSync(path.join(outDir, 'package.json'), JSON.stringify(pkg, {}, 2));
 }
 
-function build(opt = { out: 'lib' }) {
-  const { out } = opt;
+function pack(opt = {}) {
+  const { out = 'lib' } = opt;
+
   prepare(opt);
   spawn('npm', ['pack'], { cwd: out, stdio: 'inherit' });
 }
 
-function pack(opt = { out: 'lib' }) {
-  const { out } = opt;
+function build(opt = {}) {
+  const { out = 'lib' } = opt;
+
   prepare(opt);
   spawn('npm', ['publish', '--access=public'], { cwd: out, stdio: 'inherit' });
 }
