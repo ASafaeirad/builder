@@ -1,6 +1,6 @@
 {
   "name": "@frontendmonster/builder",
-  "version": "0.0.1",
+  "version": "0.1.0",
   "license": "MIT",
   "author": "frontendmonster <frontendmonster@gmail.com>",
   "description": "simple build script for my FOS libs",
@@ -11,6 +11,7 @@
   "main": "index.js",
   "files": [
     "index.js",
+    "bin.js",
     "package.json",
     "LICENSE",
     "README.md"
