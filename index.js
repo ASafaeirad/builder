@@ -15,6 +15,8 @@ function prepare({ files = [], out = 'lib', buildCmd = 'build' }) {
   const requiredFiles = [
     'LICENSE',
     'README.md',
+    'CHANGELOG.md',
+    '.npmignore',
     ...files,
   ];
 
@@ -34,18 +36,22 @@ function prepare({ files = [], out = 'lib', buildCmd = 'build' }) {
   fs.writeFileSync(path.join(outDir, 'package.json'), JSON.stringify(pkg, {}, 2));
 }
 
-function pack(opt = {}) {
-  const { out = 'lib' } = opt;
+function publis(out = 'lib') {
+  spawn('npm', ['publish', '--access=public'], { cwd: out, stdio: 'inherit' });
+}
 
-  prepare(opt);
+function pack(out = 'lib') {
   spawn('npm', ['pack'], { cwd: out, stdio: 'inherit' });
 }
 
-function build(opt = {}) {
-  const { out = 'lib' } = opt;
-
+function pack(opt = {}) {
   prepare(opt);
-  spawn('npm', ['publish', '--access=public'], { cwd: out, stdio: 'inherit' });
+  pack(opt.out)
+}
+
+function build(opt = {}) {
+  prepare(opt);
+  opt.publish && publis(opt.out);
 }
 
 module.exports = {

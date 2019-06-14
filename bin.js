@@ -17,7 +17,6 @@ const { argv } = yargs
       array: true,
     },
     pack: {
-      alias: 'p',
       requiresArg: false,
       describe: 'Just pack instead of publish',
       array: false,
@@ -28,13 +27,19 @@ const { argv } = yargs
       describe: 'build command',
       array: false,
     },
+    publish: {
+      alias: 'p',
+      requiresArg: false,
+      describe: 'Publish to npm registry',
+      array: false,
+    }
   })
   .help();
 
 const opts = {};
 
 if (argv.out) {
-  opts.out = argv.out;
+  opts.out = argv.out || 'lib';
 }
 
 if (argv.files) {
@@ -45,8 +50,6 @@ if (argv.cmd) {
   opts.buildCmd = argv.cmd;
 }
 
-if (argv.pack) {
-  builder.pack(opts);
-} else {
-  builder.build(opts);
-}
+argv.pack
+  ? builder.pack(opts)
+  : builder.build(opts);
