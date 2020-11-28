@@ -1,6 +1,6 @@
-const fs = require('fs');
 const path = require('path');
 const { spawnSync, spawn } = require('child_process');
+const fs = require('fs-extra');
 const signale = require('signale');
 const resolveRoot = require('./utils/resolve');
 
@@ -41,7 +41,7 @@ function prepare({ out, buildCmd, version, ignoreBuild }) {
       return;
     }
 
-    fs.copyFileSync(src, path.join(outDir, file));
+    fs.copySync(src, path.join(outDir, file));
   });
 
   fs.writeFileSync(
