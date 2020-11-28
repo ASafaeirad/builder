@@ -8,48 +8,31 @@ const { argv } = yargs
       alias: 'o',
       requiresArg: false,
       describe: 'Output directory for lib',
-      array: false,
+      default: 'lib',
     },
-    files: {
-      alias: 'f',
-      requiresArg: false,
-      describe: 'Files to include in lib',
-      array: true,
+    ignoreBuild: {
+      boolean: true,
+      describe: 'Ignore build command',
     },
     pack: {
       requiresArg: false,
       describe: 'Just pack instead of publish',
-      array: false,
     },
     cmd: {
       alias: 'c',
       requiresArg: false,
       describe: 'build command',
-      array: false,
+      default: 'npm run build',
     },
     publish: {
       alias: 'p',
+      boolean: true,
       requiresArg: false,
       describe: 'Publish to npm registry',
-      array: false,
-    }
+    },
   })
   .help();
 
-const opts = {};
+const opts = { out: argv.out, buildCmd: argv.cmd };
 
-if (argv.out) {
-  opts.out = argv.out || 'lib';
-}
-
-if (argv.files) {
-  opts.files = argv.files;
-}
-
-if (argv.cmd) {
-  opts.buildCmd = argv.cmd;
-}
-
-argv.pack
-  ? builder.pack(opts)
-  : builder.build(opts);
+argv.pack ? builder.pack(opts) : builder.build(opts);

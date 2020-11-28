@@ -1,57 +1,67 @@
 const fs = require('fs');
 const path = require('path');
 const { spawnSync, spawn } = require('child_process');
+const signale = require('signale');
 
-function prepare({ files = [], out = 'lib', buildCmd = 'build' }) {
-  const root = process.cwd();
+const resolveRoot = p => path.resolve(process.cwd(), p);
 
-  const pkgFile = path.join(root, 'package.json');
+function prepare({ out, buildCmd }) {
+  const pkgFile = resolveRoot('package.json');
   const pkg = require(pkgFile);
-
   Reflect.deleteProperty(pkg, 'private');
+  const outDir = resolveRoot(out);
 
-  const outDir = path.join(root, out);
+  if (!buildCmd)
+    throw Error(
+      'Warning: Build command not found, use "-c <command>" or "--ignoreBuild"',
+    );
 
-  const requiredFiles = [
-    'LICENSE',
-    'README.md',
-    'CHANGELOG.md',
-    '.npmignore',
-    ...files,
-  ];
+  const [cmd, ...args] = buildCmd.split(' ');
 
-  if (buildCmd && pkg.scripts[buildCmd]) {
-    const res = spawnSync('npm', ['run', buildCmd], { cwd: root, stdio: 'inherit' });
-    if (res.status !== 0) {
-      throw Error('Build Failed');
-    }
-  }
+  const res = spawnSync(cmd, args, {
+    cwd: process.cwd(),
+    stdio: 'inherit',
+  });
+
+  if (res.status !== 0) throw Error(`command "${buildCmd}" Failed`);
 
   if (!fs.existsSync(outDir)) {
     fs.mkdirSync(outDir);
   }
 
-  requiredFiles.map(file => fs.copyFileSync(path.join(root, file), path.join(outDir, file)));
+  const files = pkg.files;
+  files.forEach(file => {
+    const src = resolveRoot(file);
+    if (!fs.existsSync(src)) {
+      signale.warn(`file "${file}" not found. but it's in package.files.`);
+      return;
+    }
 
-  fs.writeFileSync(path.join(outDir, 'package.json'), JSON.stringify(pkg, {}, 2));
+    fs.copyFileSync(src, path.join(outDir, file));
+  });
+
+  fs.writeFileSync(
+    path.join(outDir, 'package.json'),
+    JSON.stringify(pkg, {}, 2),
+  );
 }
 
-function publis(out = 'lib') {
+function spawnPublis(out = 'lib') {
   spawn('npm', ['publish', '--access=public'], { cwd: out, stdio: 'inherit' });
 }
 
-function pack(out = 'lib') {
+function spawnPack(out = 'lib') {
   spawn('npm', ['pack'], { cwd: out, stdio: 'inherit' });
 }
 
-function pack(opt = {}) {
+function pack(opt) {
   prepare(opt);
-  pack(opt.out)
+  spawnPack(opt.out);
 }
 
-function build(opt = {}) {
+function build(opt) {
   prepare(opt);
-  opt.publish && publis(opt.out);
+  opt.publish && spawnPublis(opt.out);
 }
 
 module.exports = {

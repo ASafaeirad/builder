@@ -1,6 +1,3 @@
 {
-  "extends": ["@frontendmonster"],
-  "rules": {
-    "import/no-dynamic-require": 0
-  }
+  "extends": ["@fullstacksjs"]
 }
