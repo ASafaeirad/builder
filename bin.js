@@ -4,19 +4,11 @@ const builder = require('./index');
 
 const { argv } = yargs
   .options({
-    out: {
+    outDir: {
       alias: 'o',
       requiresArg: false,
       describe: 'Output directory for lib',
       default: 'lib',
-    },
-    ignoreBuild: {
-      boolean: true,
-      describe: 'Ignore build command',
-    },
-    pack: {
-      requiresArg: false,
-      describe: 'Just pack instead of publish',
     },
     cmd: {
       alias: 'c',
@@ -24,8 +16,15 @@ const { argv } = yargs
       describe: 'build command',
       default: 'npm run build',
     },
+    ignoreBuild: {
+      boolean: true,
+      describe: 'Ignore build command',
+    },
+    pack: {
+      requiresArg: false,
+      describe: 'Generate output pack',
+    },
     publish: {
-      alias: 'p',
       boolean: true,
       requiresArg: false,
       describe: 'Publish to npm registry',
