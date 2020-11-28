@@ -2,15 +2,9 @@ const fs = require('fs');
 const path = require('path');
 const { spawnSync, spawn } = require('child_process');
 const signale = require('signale');
+const resolveRoot = require('./utils/resolve');
 
-const resolveRoot = p => path.resolve(process.cwd(), p);
-
-function prepare({ out, buildCmd }) {
-  const pkgFile = resolveRoot('package.json');
-  const pkg = require(pkgFile);
-  Reflect.deleteProperty(pkg, 'private');
-  const outDir = resolveRoot(out);
-
+function runBuildCmd({ buildCmd }) {
   if (!buildCmd)
     throw Error(
       'Warning: Build command not found, use "-c <command>" or "--ignoreBuild"',
@@ -24,12 +18,22 @@ function prepare({ out, buildCmd }) {
   });
 
   if (res.status !== 0) throw Error(`command "${buildCmd}" Failed`);
+}
+
+function prepare({ out, buildCmd, version, ignoreBuild }) {
+  const pkg = require(resolveRoot('package.json'));
+  const files = pkg.files;
+  pkg.version = version;
+  Reflect.deleteProperty(pkg, 'files');
+  Reflect.deleteProperty(pkg, 'private');
+  const outDir = resolveRoot(out);
+
+  if (!ignoreBuild) runBuildCmd({ buildCmd });
 
   if (!fs.existsSync(outDir)) {
     fs.mkdirSync(outDir);
   }
 
-  const files = pkg.files;
   files.forEach(file => {
     const src = resolveRoot(file);
     if (!fs.existsSync(src)) {
@@ -46,11 +50,11 @@ function prepare({ out, buildCmd }) {
   );
 }
 
-function spawnPublis(out = 'lib') {
+function spawnPublis(out) {
   spawn('npm', ['publish', '--access=public'], { cwd: out, stdio: 'inherit' });
 }
 
-function spawnPack(out = 'lib') {
+function spawnPack(out) {
   spawn('npm', ['pack'], { cwd: out, stdio: 'inherit' });
 }
 

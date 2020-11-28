@@ -10,7 +10,7 @@
   },
   "main": "index.js",
   "files": [
-    "index.js",
+    "builder.js",
     "bin.js",
     "package.json",
     "LICENSE",
@@ -30,6 +30,9 @@
     "prettier": "2.2.1"
   },
   "dependencies": {
+    "chalk": "4.1.0",
+    "inquirer": "7.3.3",
+    "semver": "7.3.2",
     "signale": "1.4.0",
     "yargs": "16.1.1"
   }

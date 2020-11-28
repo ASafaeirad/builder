@@ -1,6 +1,9 @@
 #!/usr/bin/env node
 const yargs = require('yargs');
-const builder = require('./index');
+const signale = require('signale');
+const { isValidInput } = require('./utils/version');
+const builder = require('./builder');
+const selectVersion = require('./utils/select-version');
 
 const { argv } = yargs
   .options({
@@ -24,6 +27,10 @@ const { argv } = yargs
       requiresArg: false,
       describe: 'Generate output pack',
     },
+    version: {
+      alias: 'v',
+      requiresArg: true,
+    },
     publish: {
       boolean: true,
       requiresArg: false,
@@ -32,6 +39,26 @@ const { argv } = yargs
   })
   .help();
 
-const opts = { out: argv.outDir, buildCmd: argv.cmd };
+async function main() {
+  const version = isValidInput(argv.version)
+    ? argv.version
+    : await selectVersion();
 
-argv.pack ? builder.pack(opts) : builder.build(opts);
+  const opts = {
+    out: argv.outDir,
+    buildCmd: argv.cmd,
+    version,
+    ignoreBuild: argv.ignoreBuild,
+    publish: argv.publish,
+  };
+
+  argv.pack ? builder.pack(opts) : builder.build(opts);
+}
+
+main()
+  .then(() => {
+    signale.success('Done!');
+  })
+  .catch(e => {
+    signale.error(e.message);
+  });

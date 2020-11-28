@@ -25,6 +25,7 @@ builder [options]
 
 | arg           | alias | description                           |
 | ------------- | ----- | ------------------------------------- |
+| --version     | -v    | package version                       |
 | --outDir      | -o    | output directory (default: lib)       |
 | --cmd         | -c    | build commad (default: npm run build) |
 | --ignoreBuild |       | ignore build command                  |
