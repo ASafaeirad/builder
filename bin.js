@@ -32,6 +32,6 @@ const { argv } = yargs
   })
   .help();
 
-const opts = { out: argv.out, buildCmd: argv.cmd };
+const opts = { out: argv.outDir, buildCmd: argv.cmd };
 
 argv.pack ? builder.pack(opts) : builder.build(opts);
