@@ -1,6 +1,6 @@
 {
   "name": "@frontendmonster/builder",
-  "version": "2.1.1",
+  "version": "2.1.2",
   "license": "MIT",
   "author": "frontendmonster <frontendmonster@gmail.com>",
   "description": "simple build script for my FOS libs",
