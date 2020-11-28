@@ -50,22 +50,35 @@ function prepare({ out, buildCmd, version, ignoreBuild }) {
   );
 }
 
-function spawnPublis(out) {
-  spawn('npm', ['publish', '--access=public'], { cwd: out, stdio: 'inherit' });
+function spawnPublis({ out, version }) {
+  const child = spawn('npm', ['publish', '--access=public'], {
+    cwd: out,
+    stdio: 'inherit',
+  });
+  child.on('exit', code => {
+    if (code === 0) {
+      delete require.cache[require.resolve(resolveRoot('package.json'))];
+      const pkg = require(resolveRoot('package.json'));
+      pkg.version = version;
+      fs.writeFileSync(resolveRoot('package.json'), JSON.stringify(pkg, {}, 2));
+    }
+  });
 }
 
-function spawnPack(out) {
+function spawnPack({ out }) {
   spawn('npm', ['pack'], { cwd: out, stdio: 'inherit' });
 }
 
 function pack(opt) {
   prepare(opt);
-  spawnPack(opt.out);
+  spawnPack(opt);
+  return Promise.resolve(true);
 }
 
 function build(opt) {
   prepare(opt);
-  opt.publish && spawnPublis(opt.out);
+  opt.publish && spawnPublis(opt);
+  return Promise.resolve(true);
 }
 
 module.exports = {

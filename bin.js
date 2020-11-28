@@ -52,7 +52,7 @@ async function main() {
     publish: argv.publish,
   };
 
-  argv.pack ? builder.pack(opts) : builder.build(opts);
+  argv.pack ? await builder.pack(opts) : await builder.build(opts);
 }
 
 main()
