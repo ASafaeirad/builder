@@ -34,7 +34,7 @@ function prepare({ out, buildCmd, version, ignoreBuild }) {
     fs.mkdirSync(outDir);
   }
 
-  files.forEach(file => {
+  files?.forEach(file => {
     const src = resolveRoot(file);
     if (!fs.existsSync(src)) {
       signale.warn(`file "${file}" not found. but it's in package.files.`);
