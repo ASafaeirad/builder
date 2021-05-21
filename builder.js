@@ -23,7 +23,7 @@ function runBuildCmd({ buildCmd }) {
 function prepare({ out, buildCmd, version, ignoreBuild }) {
   const pkg = require(resolveRoot('package.json'));
   const files = pkg.files;
-  pkg.version = version;
+  if (version) pkg.version = version;
   Reflect.deleteProperty(pkg, 'files');
   Reflect.deleteProperty(pkg, 'private');
   const outDir = resolveRoot(out);
@@ -50,7 +50,7 @@ function prepare({ out, buildCmd, version, ignoreBuild }) {
   );
 }
 
-function spawnPublis({ out, version }) {
+function spawnPublish({ out, version }) {
   const child = spawn('npm', ['publish', '--access=public'], {
     cwd: out,
     stdio: 'inherit',
@@ -59,7 +59,7 @@ function spawnPublis({ out, version }) {
     if (code === 0) {
       delete require.cache[require.resolve(resolveRoot('package.json'))];
       const pkg = require(resolveRoot('package.json'));
-      pkg.version = version;
+      if (version) pkg.version = version;
       fs.writeFileSync(resolveRoot('package.json'), JSON.stringify(pkg, {}, 2));
     }
   });
@@ -77,7 +77,7 @@ function pack(opt) {
 
 function build(opt) {
   prepare(opt);
-  opt.publish && spawnPublis(opt);
+  opt.publish && spawnPublish(opt);
   return Promise.resolve(true);
 }
 

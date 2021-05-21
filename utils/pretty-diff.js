@@ -1,3 +1,4 @@
+/* eslint-disable fp/no-let, fp/no-loops */
 const chalk = require('chalk');
 const version = require('./version');
 

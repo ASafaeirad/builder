@@ -31,6 +31,9 @@ const { argv } = yargs
       alias: 'v',
       requiresArg: true,
     },
+    ignoreVersioning: {
+      describe: 'Ignore versioning phase',
+    },
     publish: {
       boolean: true,
       requiresArg: false,
@@ -40,7 +43,9 @@ const { argv } = yargs
   .help();
 
 async function main() {
-  const version = isValidInput(argv.version)
+  const version = argv.ignoreVersioning
+    ? null
+    : isValidInput(argv.version)
     ? argv.version
     : await selectVersion();
 
