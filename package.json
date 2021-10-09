@@ -24,17 +24,17 @@
     "lint": "eslint *.js --fix"
   },
   "devDependencies": {
-    "@fullstacksjs/eslint-config": "6.0.0",
-    "eslint": "7.26.0",
+    "@fullstacksjs/eslint-config": "6.7.2",
+    "eslint": "7.32.0",
     "np": "7.5.0",
-    "prettier": "2.3.0"
+    "prettier": "2.4.1"
   },
   "dependencies": {
-    "chalk": "4.1.1",
+    "chalk": "4.1.2",
     "fs-extra": "10.0.0",
-    "inquirer": "8.1.0",
+    "inquirer": "8.2.0",
     "semver": "7.3.5",
     "signale": "1.4.0",
-    "yargs": "17.0.1"
+    "yargs": "17.2.1"
   }
 }
